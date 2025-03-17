@@ -19,23 +19,23 @@ def clean_column_name(name):
 # Function to determine the 'КВ' (coefficient) based on conditions
 def determine_kv(row):
     bt = row['Базовый тариф']
-    if bt == 15756:
+    if bt == 1111:
         per = row['Перестрахование']
         if per == 0:
-            return 0.01
+            return 1
         elif per == 1:
-            return 0
-    elif bt == 7535:
+            return 2
+    elif bt == 2222:
         branch = row['Филиал']
         date = pd.to_datetime(row['Срок действия договора подписание'])
         # Branch and date-specific logic for setting 'КВ'
-        if branch in ["Тула", "Кемерово", "Тюмень", "Смоленск"]:
-            if pd.Timestamp('2023-11-13') <= date <= pd.Timestamp('2024-05-31'):
-                return 10
+        if branch in ["Ростов", "Уфа", "Смоленск"]:
+            if pd.Timestamp('2023-11-01') <= date <= pd.Timestamp('2024-05-31'):
+                return 1
             elif date >= pd.Timestamp('2024-06-01'):
-                return 5
+                return 2
             elif date < pd.Timestamp('2023-11-13'):
-                return 0
+                return 3
         # More branch-specific conditions...
         return 0
     return 0
@@ -55,26 +55,26 @@ for file in [f for f in os.listdir() if f.endswith('.xlsx')]:
         ((df['Статус договора страхования'] == 'Вступил в силу') & 
          (df['Превышение КВ согласовано с андеррайтерами'] == 'нет') & 
          (df['Перестрахование'] == 1) & 
-         (df['Базовый тариф'] == 7535) & 
+         (df['Базовый тариф'] == 2222) & 
          (df['ЦФО'].str.contains('_РОЗН', case=False))
         ) |
         ((df['Статус договора страхования'] == 'Вступил в силу') & 
          (df['Превышение КВ согласовано с андеррайтерами'] == 'нет') & 
-         (df['Базовый тариф'] == 15756)
+         (df['Базовый тариф'] == 1111)
         ) |
         ((df['Статус договора страхования'] == 'Вступил в силу') & 
-         (df['Превышение КВ согласовано с андеррайтерами'] == 'нет') & 
+         (df['Превышение КВ согласовано с андеррайтерами'] == 'да') & 
          (df['Перестрахование'] == 1))
         ].copy()
 
         # Apply 'КВ' determination logic
         filter_df['КВ'] = filter_df.apply(determine_kv, axis=1)
         filter_df['Договор страхования Номер'] = filter_df['Договор страхования Номер'].astype(str).str.zfill(10)
-        outpyt_df = filter_df[['Филиал', 'Договор страхования Номер', 'КВ']]
+        output_df = filter_df[['Филиал', 'Договор страхования Номер', 'КВ']]  # corrected variable name
         print("Data to change has already been found -->\n")
 
         # Prepare data for modification in Excel
-        new_df = outpyt_df
+        new_df = output_df
         new_df['Договор страхования Номер'] = new_df['Договор страхования Номер'].astype(str).str.zfill(10)
         contracts = new_df['Договор страхования Номер'].tolist()
         kv_dict = new_df.set_index('Договор страхования Номер')['КВ'].to_dict()
