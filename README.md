@@ -1,47 +1,71 @@
 # AKV_fix_automation
+
 ## Description
-This script is designed to automate the process of correcting specific numerical values (coefficients, "AKV") associated with certain branches of an insurance contract dataset. Initially, the dataset contained values that required cleaning and adjustment due to inconsistencies in a specific column where the branches were listed. The script identifies and modifies the coefficient values based on the defined rules, and then automatically updates the Excel files accordingly. The program streamlines the process of working with large datasets, making it more efficient and less prone to manual errors.
+
+This script processes multiple Excel files to filter and modify data based on specific conditions. It reads the data from each Excel file, filters rows based on given criteria, calculates the `AКВ` coefficient for insurance contracts, and updates the corresponding cells in the file. The modified cells are highlighted in red for easy identification. The script operates on files with the `.xlsx` extension and applies custom logic to determine the `AКВ` coefficient.
 
 ## Functional Description
-The program performs the following steps:
-1. Reads multiple Excel files containing contract data.
-2. Cleans and standardizes column names for easier processing.
-3. Filters the data based on specific conditions related to contract status, reinsurance, tariff, and region.
-4. Calculates the correct AKV value based on predefined rules.
-5. Updates the original Excel files with the corrected AKV values.
-6. Highlights the changed cells for easy reference.
 
-## How It Works
-1. The program scans the current working directory for Excel files.
-2. It loads each file and processes the data to clean up column names.
-3. Then, it applies filtering criteria to extract relevant records for further processing.
-4. The `determine_kv` function is used to calculate the correct AKV value for each contract based on specific conditions (e.g., branch, date, tariff).
-5. The script updates the files by inserting the corrected AKV values in the corresponding cells.
-6. Finally, the modified files are saved, with changed cells being highlighted for clarity.
+The script performs the following steps:
+1. **Cleaning Column Names**: Removes unwanted parts from column names, including level indicators and newline characters.
+2. **Calculating `КВ` Coefficient**: Based on certain conditions (such as the base tariff and other contract details), it determines the appropriate `КВ` coefficient for each row.
+3. **Filtering Data**: Filters the data based on multiple conditions related to contract status, reinsurance, tariff, and other contract details.
+4. **Modifying Excel Files**: Iterates through Excel files, applies the filtering and modification logic, and saves the updated files. It also highlights modified cells in red to indicate changes.
 
 ## Input Structure
-The program processes Excel files (.xlsx) with the following structure:
-1. The Excel files should contain contract data with relevant columns such as "Статус договора страхования", "Базовый тариф", "Перестрахование", and "Филиал".
-2. The file names should be in a format that is recognizable by the script, which processes all `.xlsx` files in the working directory.
 
-## Technical Requirements
-To run the program, the following are required:
-1. Python 3.x
-2. Installed libraries: `pandas`, `openpyxl`, `warnings`, `re`
-3. The Excel files should be structured properly with columns as specified in the script for processing.
+1. **Files**: The script processes all `.xlsx` files in the current working directory.
+2. **Columns in the Excel File**:
+   - `Статус договора страхования`: Contract status.
+   - `Превышение КВ согласовано с андеррайтерами`: Whether the `КВ` increase was agreed with underwriters.
+   - `Перестрахование`: Reinsurance flag.
+   - `Базовый тариф`: Base tariff.
+   - `ЦФО`: Central Financial Organization.
+   - `Срок действия договора подписание`: Contract start date.
+   - `Филиал`: Branch.
+   - `Договор страхования Номер`: Insurance contract number.
+   
+## Key Functions
 
-## Usage
-1. Place the Excel files you wish to process in the working directory.
-2. Run the script. It will:
-   - Automatically process each file.
-   - Correct the AKV values according to the defined rules.
-   - Highlight the changed cells in red.
-3. The modified files will be saved with the corrected AKV values.
+1. **`clean_column_name(name)`**:
+   - Removes unnecessary parts from column names like "Unnamed" and newlines, and returns a cleaned-up version.
+   
+2. **`determine_kv(row)`**:
+   - Determines the `КВ` coefficient based on conditions:
+     - **Base Tariff** (`Базовый тариф`) = 1111 or 2222.
+     - For `Базовый тариф` = 2222, checks the branch and contract signing date.
+     - Applies specific logic for certain branches and dates.
+
+3. **Excel Modification**:
+   - Loops through each row of the Excel file and updates the corresponding cell with the calculated `КВ` value.
+   - Highlights the updated cells in red using the `openpyxl` library.
+   
+## Output
+
+- The `КВ` coefficient is calculated and stored in a new column for each row.
+- The script highlights cells in red where modifications were made.
+- The updated data is saved back into the same Excel file.
+
+## Example Workflow
+
+1. The script reads an Excel file and cleans up column names.
+2. It filters the data based on certain conditions, such as:
+   - Contract status is "In force" (`Вступил в силу`).
+   - Reinsurance status is not agreed with underwriters (`Превышение КВ согласовано с андеррайтерами` = "нет").
+   - Base tariff is either 1111 or 2222.
+3. The script applies the custom logic to determine the `КВ` coefficient.
+4. The `КВ` values are written into the corresponding cells in the Excel file, and the updated cells are highlighted in red.
+5. The modified Excel file is saved with the new data.
+
+## Error Handling
+
+If a file does not meet the required format or if an error occurs while processing a file, the script will print an error message and skip that file.
 
 ## Example Output
-For each processed file, the following steps occur:
-1. Corrected AKV values are inserted in the designated columns.
-2. The cells with changes are highlighted for easy identification.
+
+- **Excel Modifications**: After processing, cells that have been modified will be highlighted in red.
+- **Final Message**: After completing the processing, the script prints.
 
 ## Conclusion
-This tool automates the process of correcting and updating AKV values in large insurance contract datasets, improving efficiency and reducing the likelihood of human error. It streamlines the data cleaning process and saves time when working with multiple Excel files containing contract data.
+
+This script automates the process of filtering and modifying contract data in Excel files. It applies custom logic to determine the `КВ` coefficient, updates the data, and highlights changes for easy identification. The use of `openpyxl` allows for efficient modifications to the Excel files, ensuring data integrity and clarity.
