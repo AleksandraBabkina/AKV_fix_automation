@@ -2,7 +2,7 @@
 
 ## Description
 
-This script processes multiple Excel files to filter and modify data based on specific conditions. It reads the data from each Excel file, filters rows based on given criteria, calculates the `AКВ` coefficient for insurance contracts, and updates the corresponding cells in the file. The modified cells are highlighted in red for easy identification. The script operates on files with the `.xlsx` extension and applies custom logic to determine the `AКВ` coefficient.
+This script processes multiple Excel files to filter and modify data based on specific conditions. It reads the data from each Excel file, filters rows based on given criteria, calculates the `КВ` coefficient for insurance contracts, and updates the corresponding cells in the file. The modified cells are highlighted in red for easy identification. The script operates on files with the `.xlsx` extension and applies custom logic to determine the `КВ` coefficient.
 
 ## Functional Description
 
